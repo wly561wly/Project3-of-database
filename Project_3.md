@@ -7,13 +7,107 @@
 3. 提供 openGuass的详细评估，包括优势和劣势
 4. 报告和源码应该在 github 上公布
 
-计划安排
+#### 主要评价指标
+
+响应时间：
+
+​		请求完成所需要的时间，通常使用平均响应时间、中位数、90% 等等来衡量；
+
+​		基准测试：1个用户，200-500ms；压力测试：多个用户，2 秒
+
+吞吐量：衡量网络上成功运输的数量，单位是 Byte/s
+
+TPS：系统在一定时间内能够处理的事务，每秒事务数TPS
+
+QPS：每秒的查询率
+
+RPS：系统内能够同时使用的接口
+
+HPS：每一秒的点击率
+
+并发用户数：系统能同时处理的最大用户请求数量
+
+事务：接口、流程都可以是事务；事务控制器
+
+资源利用率：包括CPU使用率、内存使用情况、磁盘I/O 和网络I/O
+
+错误率：测试过程中失败的请求所占的比例
+
+稳定性：在长时间运行下系统性能的波动情况
+
+场景模拟：影响测试规模、时间等等
+
+### 测试内容
+
+​	变量包括了用户数量、数据规模、查询sql语句的复杂度、index的影响、事务间隔级别设置(在测试计划的配置中)等等
+
+```postgresql
+DROP TABLE IF EXISTS table1, table2, table3, ...;//测试前先清空
+TRUNCATE TABLE table_name;
+```
+
+
+
+##### 测试方式
+
+​	使用数据生成器，生成不同规模的数据，
+
+#### 基准测试
+
+​	只使用一个用户，进行基本操作，包括不同规模的insert、和各种查询，创建 function，创建 trigger等等
+
+​	比较上面标出的评价指标：响应时间、错误率、资源利用率、吞吐量、TPS，QPS等等
+
+insert 测试
+
+```
+INSERT INTO ${test_id} VALUES ('${col1}','${col2}','${col3}','${col4}','${col5}');
+聚合报告
+D:\Desktop\Project3\test_case\test_1_insert_post.csv
+CSV文件设置
+D:/Desktop/Project3/test_case/test_insert.csv
+test_id,col1,col2,col3,col4,col5
+```
+
+select 测试
+
+```
+${statement}
+D:/Desktop/Project3/test_case/query_csv.csv
+statement,value
+
+${statement}, ${s1}
+statement,s1,s2
+
+a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w
+${a},${b},${c},${d},${e},${f},${g},${h},${i},${j},${k},${l},${m},${n},${o},${p},${q},${r},${s},${t},${u},${v},${w}
+```
+
+
+
+#### 压力测试
 
 
 
 ​	
 
+#### Reference
+
+[jmeter中如何对cpu使用率和内存占用率进行压测_jmeter接口压力测试中,cpu和内存使用率如何获取、-CSDN博客](https://blog.csdn.net/m0_73575927/article/details/135082845)
+
+
+
+
+
 ### 其他内容
+
+#### 性能压测脚本的生成
+
+在internet属性中查看ip地址和端口
+
+在线程组下 新建一个 HTTP Cookoe管理器。再在测试计划中 增加一个HTTP代理服务器，在 Request Filtering 下排除模式中，选择 添加建议排除，在末尾加上 `.*`，然后将这个脚本保存，在包含模式中输入 项目的ip；然后设置 测试计划，测试计划->线程组、在组间增加分隔
+
+
 
 #### 配置 docker 容器
 
