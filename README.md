@@ -97,29 +97,35 @@ docker run -d \--name project3-postgres \-e POSTGRES_USER=postgres-e POSTGRES_PA
 
    点击“OK”保存配置。
 
-   <img src="https://raw.githubusercontent.com/wly561wly/Project3-of-database/main/picture/config.png" alt="config" style="zoom:67%;" />
+   <img src="https://github.com/wly561wly/Project3-of-database/blob/main/picture/config.png?raw=true" alt="config" style="zoom:67%;" />
 
 4. **添加 JDBC 请求**：
 
-   - 右键点击线程组，选择“Add” -> “Sampler” -> “JDBC Request”。
+   右键点击线程组，选择“Add” -> “Sampler” -> “JDBC Request”。
 
-   - 在“JDBC Request”采样器中，选择之前创建的 JDBC 连接配置变量名，例如“jdbcPostgreSQL”。
+   在“JDBC Request”采样器中，选择之前创建的 JDBC 连接配置变量名，例如“jdbcPostgreSQL”。
 
-   - 在“SQL query”字段中，输入你想要执行的 SQL 查询语句。
+   在“SQL query”字段中，输入你想要执行的 SQL 查询语句。
 
-     
+   <img src="https://github.com/wly561wly/Project3-of-database/blob/main/picture/request.png?raw=true" alt="request" style="zoom:67%;" />
+
+   同时，这里可以使用自带的随机脚本或者导入csv文件，使用对应文本进行替换；为了测试更加多样，还可以使用 事务控制器 来进行模拟事务：
+
+    a) 可以使用 JMeter 的内置变量来动态生成 SQL 查询，例如使用 `${__RandomString(10, 0123456789,)}` 来生成一个随机的字符串作为查询参数。
+
+   b) 如果要从 CSV 文件中读取数据来执行 SQL 查询，可以添加一个“CSV Data Set Config”元素到你的线程组。其中，指定 CSV 文件的路径和变量名，这些变量名将在 SQL 查询中被使用
+
+​		c) 为了进行并发测试，还可以添加一个“Transaction Controller”到你的线程组。在“Transaction Controller”中，你可以设置事务的名称和其他相关选项
 
 5. **添加查看结果树**：
 
 ​	在"线程组"->"Add"-"监听器"中选择添加，可以帮助你查看每个请求的详细信息，包括请求和响应的详细内容。（如图，可以看到对应查询得到的结果表）
 
-<img src="https://raw.githubusercontent.com/wly561wly/Project3-of-database/refs/heads/main/picture/result_tree聚合.png" alt="result_tree" style="zoom:67%;" />
+<img src="https://github.com/wly561wly/Project3-of-database/blob/main/picture/result_tree%E8%81%9A%E5%90%88.png?raw=true" alt="result_tree" style="zoom:67%;" />
 
 6. **添加结果监听器**：
 
-- 右键点击线程组，选择“Add” -> “Listener” -> “View Results in Table”。这将添加一个结果监听器，用于显示测试结果。
-
-
+​		右键点击线程组，选择“Add” -> “Listener” -> “View Results in Table”。这将添加一个结果监听器，用于显示测试结果
 
 7. **设置线程组参数**：
 
@@ -131,7 +137,7 @@ docker run -d \--name project3-postgres \-e POSTGRES_USER=postgres-e POSTGRES_PA
 
 同时，当使用 CSV 文件导入数据时，需要考虑 CSV Data Set Config 中的线程共享模式的选择。有“Current Thread”和“All Threads”等多种选择。选择“Current Thread”时，每个线程将独立地从 CSV 文件中读取数据，而选择“All Threads”时，所有线程将共享 CSV 文件中的数据，并且每个线程将从文件的不同部分读取数据，实现交替获取。
 
-<img src="https://githubusercontent.com/wly561wly/Project3-of-database/main/picture/thread_group.png" alt="config" style="zoom:67%;" />
+<img src="https://github.com/wly561wly/Project3-of-database/blob/main/picture/thread_group.png?raw=true" alt="thread_group" style="zoom:67%;" />
 
 8. **运行测试计划**：
 
@@ -144,15 +150,34 @@ docker run -d \--name project3-postgres \-e POSTGRES_USER=postgres-e POSTGRES_PA
 - **吞吐量**：观察不同时间段的吞吐量变化，了解数据库在高并发下的处理能力。
 - **错误率**：观察错误率的变化，了解数据库的稳定性和可靠性
 
+<img src="https://github.com/wly561wly/Project3-of-database/blob/main/picture/insert_test_og.png?raw=true" alt="thread_group" style="zoom:67%;" />
+
+10. **保存配置**：在完成一个配置后，可以选择保存为 `.jmx` 文件，方便下次使用（在 “test_case” 文件夹下就保存了我的测试配置 `"Opengauss_test.jmx"`,`"Postgres_test1.jmx"`）
 
 
 
+#### 其他 tips：
 
+1. 设置 **JMeter 简体中文界面**：
 
+​	可以在 JMeter 的选项中选择简体中文，不过这个设置不能保存。或者，你可以通过编辑 JMeter 安装目录下 `bin` 文件夹中的 `jmeter.properties` 文件，并将 `language` 属性设置为 `zh_CN` 来永久更改界面语言，记得使用管理员权限打开该文件。
 
+	2. 使用 **ServerAgent** 监控 `CPU`、`Memory`
 
+- ​	需要去 JMeter 官网上下载 插件 `jmeter-plugins-manager.jar`,`JMeterPlugins-Standard.jar`,`JMeterPlugins-Extras.jar`，放到 `lib/ext` 文件夹下。
+- ​	然后打开 JMeter，进入菜单栏 `Options` -> `Plugins Manager`，安装以下插件：**PerfMon Metrics Collector**
+- ​	访问 [ServerAgent GitHub 仓库](https://github.com/undera/perfmon-agent) 下载 `ServerAgent-2.2.3.zip`
+- ​	右键点击线程组，选择“Add” -> “Listener” -> “jp@gc - PerfMon Metrics Collector”。
 
-设置 JMeter 简体中文界面：可以在 JMeter 的选项中选择简体中文，不过这个设置不能保存。或者，你可以通过编辑 JMeter 安装目录下 `bin` 文件夹中的 `jmeter.properties` 文件，并将 `language` 属性设置为 `zh_CN` 来永久更改界面语言，记得使用管理员权限打开该文件。
+​			在“PerfMon Metrics Collector”中，配置以下参数：
+
+​				**Host/IP**：被测服务器的 IP 地址。
+
+​				**Port**：ServerAgent 的端口，默认为 4444。
+
+​				**Metric to collect**：选择要监控的指标，如 `CPU`、`Memory` 等
+
+​	在使用时，保持 ServerAgent 程序正在运行。
 
 Reference：[JMeter连接MYSQL数据库并进行操作详解](https://www.cnblogs.com/mrgavin/p/12808447.html)
 
@@ -168,4 +193,17 @@ Reference：[JMeter连接MYSQL数据库并进行操作详解](https://www.cnblog
 | 笔记本处理器 | AMD Ryzen 9 7940H w/ Radeon 780M Graphics 4.00 GHz |             |
 |   机带 RAM   |              16.0 GB （15.2 GB可用）               |             |
 |  笔记本系统  |               Windows 11 家庭中文版                |             |
+
+代码、数据文件说明：
+
+|          文件名          |                  功能                   | 备注 |
+| :----------------------: | :-------------------------------------: | :--: |
+|    Opengauss_test.jmx    |       JMeter中 openGauss 配置文件       |      |
+|    Postgres_test1.jmx    |      JMeter中 PostgreSQL 配置文件       |      |
+| query_dataGenerator.cpp  | 随机生成select/update对应的 csv/sql文件 |      |
+| insert_dataGenerator.cpp |   随机生成 insert 对应的 csv/sql文件    |      |
+|        data.xlsx         |          记录了所有的测试数据           |      |
+|     picture(folder)      |        存储了本文档中的对应图片         |      |
+|     test_tables.sql      |      包含 更新测试table 的sql 命令      |      |
+|      query_sql.sql       |       包含 SELECT 测试中 sql 命令       |      |
 
