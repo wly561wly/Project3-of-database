@@ -179,6 +179,21 @@ docker run -d \--name project3-postgres \-e POSTGRES_USER=postgres-e POSTGRES_PA
 
 ​	在使用时，保持 ServerAgent 程序正在运行。
 
+### 结论
+
+##### OpenGauss **优势**：
+
+1. **资源利用率**：OpenGauss的单进程多线程架构在高并发场景下表现出色，能够更有效地利用CPU和内存资源，尤其是在多核CPU环境下。
+2. **扩展性**：OpenGauss将Xid从int32扩展到int64，显著增加了事务ID的范围，减少了Xid耗尽的风险，适合高并发事务处理。
+3. **增量检查点**：引入增量检查点机制，减少了对业务的影响，平滑了IO，降低了数据库性能波动。
+
+**劣势**：
+
+1. **性能表现**：在一些测试场景中，OpenGauss的性能表现不如PostgreSQL，尤其是在复杂查询和大数据量处理方面。（也可能是测试软硬件问题）
+2. **功能支持**：OpenGauss在某些高级功能，如逻辑解码和并行处理方面，可能不如PostgreSQL成熟，同时使用 C++ 后，移植性降低了。
+
+​	通过本次对 `OpenGauss` 和 `PostgreSQL` 的比较分析，我们得以管中窥豹，了解了这两种数据库系统在不同场景下的表现。虽然 `OpenGauss` 可能在安全、高并发等领域存在优势，而这部分我不能很好地测试出来，但在性能和生态系统方面仍有提升空间。`PostgreSQL` 作为一个成熟且广泛使用的数据库系统，其稳定性和丰富的功能集得到了市场的验证，在多项比较中都表现出色。
+
 Reference：[JMeter连接MYSQL数据库并进行操作详解](https://www.cnblogs.com/mrgavin/p/12808447.html)
 
 测试环境
