@@ -1,6 +1,6 @@
 # 使用 JMeter 和 DataGrip 测试 PostgreSQL 和 OpenGauss
 
-本项目旨在展示如何使用 JMeter 和 DataGrip 对 PostgreSQL 和 OpenGauss 数据库进行基本的性能测试和数据操作。
+本项目旨在展示如何使用 JMeter 和 DataGrip 对 PostgreSQL 和 OpenGauss 数据库进行基本的性能测试和数据操作。请注意，由于测试在本地环境中进行，结果可能受到多种因素的影响，因此**仅供参考**。
 
 ### 安装和配置 JMeter
 
