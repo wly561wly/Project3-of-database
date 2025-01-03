@@ -97,33 +97,52 @@ docker run -d \--name project3-postgres \-e POSTGRES_USER=postgres-e POSTGRES_PA
 
    点击“OK”保存配置。
 
-   
+   <img src="https://raw.githubusercontent.com/wly561wly/Project3-of-database/main/picture/config.png" alt="config" style="zoom:67%;" />
 
 4. **添加 JDBC 请求**：
 
    - 右键点击线程组，选择“Add” -> “Sampler” -> “JDBC Request”。
+
    - 在“JDBC Request”采样器中，选择之前创建的 JDBC 连接配置变量名，例如“jdbcPostgreSQL”。
+
    - 在“SQL query”字段中，输入你想要执行的 SQL 查询语句。
 
-5. **添加结果监听器**：
+     
 
-   - 右键点击线程组，选择“Add” -> “Listener” -> “View Results in Table”。这将添加一个结果监听器，用于显示测试结果。
+5. **添加查看结果树**：
 
-6. **设置线程组参数**：
+​	在"线程组"->"Add"-"监听器"中选择添加，可以帮助你查看每个请求的详细信息，包括请求和响应的详细内容。（如图，可以看到对应查询得到的结果表）
 
-   - 右键点击线程组，选择“Add” -> “Thread Group” -> “Thread Group”。
-   - 在“Thread Group”窗口中，设置线程数（Number of Threads）、循环次数（Loop Count）和其他相关参数。
+<img src="https://raw.githubusercontent.com/wly561wly/Project3-of-database/refs/heads/main/picture/result_tree聚合.png" alt="result_tree" style="zoom:67%;" />
 
-7. **运行测试计划**：
+6. **添加结果监听器**：
 
-   - 点击工具栏中的“Start”按钮来运行测试计划。
-   - 观察结果监听器中的输出，以查看测试结果。
+- 右键点击线程组，选择“Add” -> “Listener” -> “View Results in Table”。这将添加一个结果监听器，用于显示测试结果。
 
-8. **分析测试结果**：
 
-   - **响应时间**：观察不同请求的响应时间，了解哪些请求响应较慢，可能是数据库性能瓶颈所在。
-   - **吞吐量**：观察不同时间段的吞吐量变化，了解数据库在高并发下的处理能力。
-   - **错误率**：观察错误率的变化，了解数据库的稳定性和可靠性
+
+7. **设置线程组参数**：
+
+- 线程数：定义同时运行的虚拟用户数量。
+- Ramp-Up 时间：所有线程启动并开始执行测试所需的时间。
+- 持续时间：测试计划的总持续时间。
+- 启动延迟：测试计划开始执行前的等待时间。
+- 循环次数：每个线程将执行测试计划的次数。
+
+同时，当使用 CSV 文件导入数据时，需要考虑 CSV Data Set Config 中的线程共享模式的选择。有“Current Thread”和“All Threads”等多种选择。选择“Current Thread”时，每个线程将独立地从 CSV 文件中读取数据，而选择“All Threads”时，所有线程将共享 CSV 文件中的数据，并且每个线程将从文件的不同部分读取数据，实现交替获取。
+
+<img src="https://githubusercontent.com/wly561wly/Project3-of-database/main/picture/thread_group.png" alt="config" style="zoom:67%;" />
+
+8. **运行测试计划**：
+
+- 点击工具栏中的“Start”按钮来运行测试计划。
+- 观察结果监听器中的输出，以查看测试结果。
+
+9. **分析测试结果**：
+
+- **响应时间**：观察不同请求的响应时间，了解哪些请求响应较慢，可能是数据库性能瓶颈所在。
+- **吞吐量**：观察不同时间段的吞吐量变化，了解数据库在高并发下的处理能力。
+- **错误率**：观察错误率的变化，了解数据库的稳定性和可靠性
 
 
 
